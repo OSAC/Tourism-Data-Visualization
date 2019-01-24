@@ -7,15 +7,19 @@ In order to run it locally, perform following intructions:
 1. Clone this project.
 2. Create virtual environment using terminal:
      ```code
-     conda create --name environmentname python
+     conda create --name yourenvname python=x.x
      ```
 3. To activate virtual environment, use:
      ```code
-     activate environmentname
+     activate yourenvname
      ```
    To deactivate, use:
      ```code
      deactivate
+     ```
+   To delete a conda environment, use:
+     ```code
+     conda remove -n yourenvname -all
      ```
 4. To install all required dependencies or update requirements.txt by:
      ```code
