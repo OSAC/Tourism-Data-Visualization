@@ -32,8 +32,8 @@ def update_figure(selected_year):
     traces = []
     
     traces.append(go.Scatter(
-        x = filtered_df['Month'],
-        y = filtered_df['Visitors'],
+        x = filtered_df['Month'].values,
+        y = filtered_df['Visitors'].values,
         mode='markers',
         opacity=0.7,
         marker={
