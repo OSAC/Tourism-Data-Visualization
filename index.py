@@ -11,6 +11,7 @@ import pandas as pd
 # DATA
 by_month_df = pd.read_csv('data/by_month_year')
 by_year = pd.read_csv('data/modified_visitors_by_month', index_col = [0])
+by_purpose = pd.read_csv('data/by_purpose_cleaned')
 
 
 app = dash.Dash()
@@ -23,7 +24,7 @@ app.layout = html.Div([
                  dcc.Dropdown(
                     id= 'options-dropdown',
                     options=[
-                        #{'label': 'By Purpose','value': 'BP'},
+                        {'label': 'By Purpose','value': 'BP'},
                         #{'label': 'By Gender','value': 'BG'},
                         {'label': 'By Month','value': 'BM'},
                         {'label': 'By Year','value': 'BY'},
@@ -78,6 +79,26 @@ def update_figure(selected_year, selected_option):
                         hovermode='closest'
                                 )
                 }
+
+    # by purpose block           
+    elif selected_option == 'BP':
+        # create a new dataframe for selected year
+        dff = by_purpose[by_purpose.Year == selected_year ]
+        return {'data' : [go.Bar(
+                                 x=dff['Purpose of visit'].values,
+                                 y=dff['No of tourists'].values,
+                                 name = "Histogram "
+                                )
+                         ],
+                'layout': go.Layout(
+                             title= 'Tourist Arrival By Purpose',
+                             xaxis={ 'title': 'Purpose of Visit in: {}'.format(selected_year)},
+                             yaxis={'title': 'Total No of visitors'},
+                             hovermode='closest'
+                 )
+                
+                     
+               }               
 
     elif selected_option == 'BY':
             return {
