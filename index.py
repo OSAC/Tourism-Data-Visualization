@@ -1,5 +1,6 @@
 #IMPORTS
 import dash
+import plotly.plotly as py
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -8,80 +9,16 @@ import plotly.graph_objs as go
 import numpy as np
 import pandas as pd
 
-# Code to generate data values for our plot
-df = pd.read_csv('data/modified_visitors_by_month', index_col = [0])
-df1 = pd.read_csv('data/mpg.csv')
-date = df['date'].values
-visitors = df['Visitors'].values
+#MAP API
+py.sign_in(username='Pasangdimdung', api_key= '9vmGsmFMTm0NEyyLBDBl')
 
 # DATA
 by_month_df = pd.read_csv('data/by_month_year')
 by_year = pd.read_csv('data/modified_visitors_by_month', index_col = [0])
 by_purpose = pd.read_csv('data/by_purpose_cleaned')
-
+by_nationality = pd.read_csv('data/by_major_nationality_2013_cleaned.csv')
 
 app = dash.Dash()
-
-
-app.layout= html.Div(
-    [
-        html.Div(
-            [
-                dcc.Dropdown(
-                    id='dropdown',
-                    options=[
-                        {'label': 'By Purpose', 'value': 'BP'},
-                        {'label': 'By Gender', 'value': 'BG'},
-                        {'label': 'By Month', 'value': 'BM'},
-                        {'label': 'By number of Trekkers', 'value': 'BNT'}
-                            ],
-                    value = 'BM'
-                             ),
-
-                dcc.RangeSlider(
-                                count=1,
-                                min=-5,
-                                max=10,
-                                step=0.5,
-                                value=[-3, 7]
-                               ),
-
-                dcc.Graph(
-                    id='Linechart',
-                    figure= {'data':[go.Scatter(
-                                         x=date,
-                                         y=visitors,
-                                         mode='lines+markers',
-                                         name='LM'
-                                                )
-                                     ],
-                              'layout':go.Layout(
-                                           title='Tourist arrival by month from 1992-2013',
-                                           xaxis= {'title': 'Months'},
-                                           yaxis= {'title': 'No of Tourist'}
-                                                 )
-                            }
-                         ),
-
-                dcc.Graph(
-                    id='histogram',
-                    figure={
-                        'data': [go.Histogram(
-                                    x=df1['mpg'],
-                                    xbins=dict(start=8,end=50,size=6),
-                                )]
-                                ,
-                        'layout': go.Layout(
-                                     title="Miles per Gallon Frequencies of<br>\
-                                            1970's Era Vehicles"
-                                            )
-                            }
-                           )
-
-
-            ])
-    ])
-
 
 #MAIN APP
 app.layout = html.Div([
@@ -112,7 +49,43 @@ app.layout = html.Div([
                     max=by_month_df['Year'].max(),
                     value=by_month_df['Year'].min(),
                     marks={str(year): str(year) for year in by_month_df['Year'].unique()}
-                            )
+                            ),
+
+                 html.P(),
+
+                 dcc.Graph(
+                    id= 'chloropleth-map',
+                    figure = dict(
+                         data=[ dict(
+                                type = 'choropleth',
+                                locations = by_nationality['CODE'],
+                                z = by_nationality['No. of Tourist Days'],
+                                text = by_nationality['Nationality'],
+                                colorscale = [[0,"rgb(5, 10, 172)"],[0.35,"rgb(40, 60, 190)"],[0.5,"rgb(70, 100, 245)"],\
+                                    [0.6,"rgb(90, 120, 245)"],[0.7,"rgb(106, 137, 247)"],[1,"rgb(220, 220, 220)"]],
+                                autocolorscale = False,
+                                reversescale = True,
+                                marker = dict(
+                                    line = dict (
+                                        color = 'rgb(180,180,180)',
+                                        width = 0.5
+                                    ) ),
+                                colorbar = dict(
+                                    autotick = False,
+                                    title= 'Number of Tourists'),
+                              ) ],
+                          layout=dict(
+                                  title = 'By Major Nationality (2013)',
+                                  geo = dict(
+                                          showframe = False,
+                                          showcoastlines = False,
+                                          projection = dict(
+                                              type = 'Mercator'
+                                                            )
+                                          )
+                                     )
+                               )
+                           )
                      ])
 
 #DECORATOR
@@ -182,7 +155,7 @@ def update_figure(selected_year, selected_option):
                              hovermode='closest'
                  )
                     }
-                    
+
 
 if __name__ == '__main__':
     app.run_server()
