@@ -9,7 +9,7 @@ import plotly.graph_objs as go
 import numpy as np
 import pandas as pd
 
-#MAP API
+#MAP AND PIECHART API
 py.sign_in(username='Pasangdimdung', api_key= '8guPFK8ijphU3LjmCEJu')
 
 # DATA
@@ -49,7 +49,7 @@ app.layout = html.Div([
                     id='year-slider',
                     min=by_month_df['Year'].min(),
                     max=by_month_df['Year'].max(),
-                    value=by_month_df['Year'].max(),
+                    value=by_month_df['Year'].min(),
                     marks={str(year): str(year) for year in by_month_df['Year'].unique()}
                             ),
 
@@ -167,11 +167,16 @@ def update_figure(selected_year, selected_option):
 
                 'data' : [go.Pie(
                             labels=['Male', 'Female'],
-                            values=[int(filteredsex_df['Male'].values),int(filteredsex_df['Female'].values)]
+                            values=[int(filteredsex_df['Male'].values),int(filteredsex_df['Female'].values)],
+                            hole= 0.4
                                 )
                          ],
                  'layout': go.Layout(
-                             title= 'Tourist Arrivals By Sex (2003-2014)'
+                             title= 'Tourist Arrivals By Sex (2003-2014)',
+                             annotations= [{
+                                "font": {"size": 20},
+                                "showarrow":False,
+                                "text": "GENDER"}]
                                     )
                 }
 
