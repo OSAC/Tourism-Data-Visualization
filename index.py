@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 #MAP API
-py.sign_in(username='Pasangdimdung', api_key= '9vmGsmFMTm0NEyyLBDBl')
+py.sign_in(username='Pasangdimdung', api_key= '8guPFK8ijphU3LjmCEJu')
 
 # DATA
 by_month_df = pd.read_csv('data/by_month_year')
@@ -93,6 +93,7 @@ app.layout = html.Div([
              [Input('year-slider', 'value'), Input('options-dropdown', 'value')])
 
 def update_figure(selected_year, selected_option):
+    #BY MONTH BLOCK
     if selected_option == 'BM':
         filtered_df = by_month_df[by_month_df.Year == selected_year]
 
@@ -120,7 +121,7 @@ def update_figure(selected_year, selected_option):
                                 )
                 }
 
-    # by purpose block
+    #BY PURPOSE BLOCK
     elif selected_option == 'BP':
         # create a new dataframe for selected year
         dff = by_purpose[by_purpose.Year == selected_year ]
