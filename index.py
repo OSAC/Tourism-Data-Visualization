@@ -47,7 +47,7 @@ app.layout = html.Div([
                     id='year-slider',
                     min=by_month_df['Year'].min(),
                     max=by_month_df['Year'].max(),
-                    value=by_month_df['Year'].min(),
+                    value=by_month_df['Year'].max(),
                     marks={str(year): str(year) for year in by_month_df['Year'].unique()}
                             ),
 
