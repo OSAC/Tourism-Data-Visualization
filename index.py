@@ -17,8 +17,10 @@ by_month_df = pd.read_csv('data/by_month_year')
 by_year = pd.read_csv('data/modified_visitors_by_month', index_col = [0])
 by_purpose = pd.read_csv('data/by_purpose_cleaned')
 by_nationality = pd.read_csv('data/by_major_nationality_2013_cleaned.csv')
+by_sex = pd.read_csv('data/by_sex_cleaned.csv')
 
 app = dash.Dash()
+
 
 #MAIN APP
 app.layout = html.Div([
@@ -29,7 +31,7 @@ app.layout = html.Div([
                     id= 'options-dropdown',
                     options=[
                         {'label': 'By Purpose','value': 'BP'},
-                        #{'label': 'By Gender','value': 'BG'},
+                        {'label': 'By Gender','value': 'BG'},
                         {'label': 'By Month','value': 'BM'},
                         {'label': 'By Year','value': 'BY'},
                         #{'label': 'By number of Trekkers','value': 'BNT'}
@@ -86,6 +88,7 @@ app.layout = html.Div([
                                      )
                                )
                            )
+
                      ])
 
 #DECORATOR
@@ -140,7 +143,7 @@ def update_figure(selected_year, selected_option):
 
 
                }
-
+   #BY YEAR BLOCK
     elif selected_option == 'BY':
             return {
                 'data' : [go.Scatter(
@@ -155,7 +158,23 @@ def update_figure(selected_year, selected_option):
                              yaxis={'title': 'No of visitors'},
                              hovermode='closest'
                  )
-                    }
+                }
+    #BY GENDER BLOCK
+    elif selected_option == 'BG':
+
+        filteredsex_df = by_sex[by_sex['Years'] == selected_year]
+        return {
+
+                'data' : [go.Pie(
+                            labels=['Male', 'Female'],
+                            values=[int(filteredsex_df['Male'].values),int(filteredsex_df['Female'].values)]
+                                )
+                         ],
+                 'layout': go.Layout(
+                             title= 'Tourist Arrivals By Sex (2003-2014)'
+                                    )
+                }
+
 
 
 if __name__ == '__main__':
