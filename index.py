@@ -16,8 +16,8 @@ py.sign_in(username='Pasangdimdung', api_key= '8guPFK8ijphU3LjmCEJu')
 by_month_df = pd.read_csv('data/by_month_year')
 by_year = pd.read_csv('data/modified_visitors_by_month', index_col = [0])
 by_purpose = pd.read_csv('data/by_purpose_cleaned')
-by_nationality = pd.read_csv('data/by_major_nationality_2013_cleaned.csv')
-by_sex = pd.read_csv('data/by_sex_cleaned.csv')
+by_nationality = pd.read_csv('data/by_major_nationality_2013')
+by_sex_age = pd.read_csv('data/by_sex_age')
 
 app = dash.Dash()
 
@@ -31,7 +31,7 @@ app.layout = html.Div([
                     id= 'options-dropdown',
                     options=[
                         {'label': 'By Purpose','value': 'BP'},
-                        {'label': 'By Gender','value': 'BG'},
+                        {'label': 'By Gender And Age','value': 'BGA'},
                         {'label': 'By Month','value': 'BM'},
                         {'label': 'By Year','value': 'BY'},
                         #{'label': 'By number of Trekkers','value': 'BNT'}
@@ -160,25 +160,55 @@ def update_figure(selected_year, selected_option):
                  )
                 }
     #BY GENDER BLOCK
-    elif selected_option == 'BG':
-
-        filteredsex_df = by_sex[by_sex['Years'] == selected_year]
+    elif selected_option == 'BGA':
+        filteredsexage_df = by_sex_age[by_sex_age.Years == selected_year]
         return {
+                'data': [{
+                      'values': [int(filteredsexage_df['Male'].values),int(filteredsexage_df['Female'].values)],
+                      'labels': ['Male', 'Female'],
+                      'domain': {"x": [0, .48]},
+                      'name': 'Gender',
+                      'hoverinfo':'label+value+name',
+                      'textinfo':'label+percent',
+                      'hole': .4,
+                      'type': 'pie'
+                         },
 
-                'data' : [go.Pie(
-                            labels=['Male', 'Female'],
-                            values=[int(filteredsex_df['Male'].values),int(filteredsex_df['Female'].values)],
-                            hole= 0.4
-                                )
-                         ],
-                 'layout': go.Layout(
-                             title= 'Tourist Arrivals By Sex (2003-2014)',
-                             annotations= [{
-                                "font": {"size": 20},
-                                "showarrow":False,
-                                "text": "GENDER"}]
-                                    )
-                }
+                         {
+                      'values': [int(filteredsexage_df['15-below'].values),
+                                 int(filteredsexage_df['16-30'].values),
+                                 int(filteredsexage_df['31-45'].values),
+                                 int(filteredsexage_df['46-60'].values),
+                                 int(filteredsexage_df['61-over'].values),
+                                 int(filteredsexage_df['Not_specified'].values),],
+                      'labels': ['Below 15 yrs', '16-30 yrs', '31-45 yrs', '46-60 yrs', '61 and over', 'Not specified'],
+                      'textposition':'inside',
+                      'domain': {'x': [.52, 1]},
+                      'name': 'Age Group',
+                      'hoverinfo':'label+value+name',
+                      'hole': .4,
+                      'type': 'pie'
+                      #'marker':{'colors':['#fac1b7', '#a9bb95', '#92d8d8']},
+                    }],
+
+              'layout': {
+                    'title':"Tourists Arrival By Sex and Age 2003-2014",
+                    'annotations': [{
+                            "font": {"size": 20},
+                            "showarrow": False,
+                            "text": "GENDER",
+                            "x": 0.20,
+                            "y": 0.5
+                                    },
+                             {
+                            "font": {"size": 20},
+                            "showarrow": False,
+                            "text": "AGE GRP",
+                            "x": 0.8,
+                            "y": 0.5
+                                    }]
+                         }
+            }
 
 
 
