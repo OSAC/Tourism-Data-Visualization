@@ -15,7 +15,7 @@ py.sign_in(username='Pasangdimdung', api_key= '8guPFK8ijphU3LjmCEJu')
 # DATA
 by_month_df = pd.read_csv('data/by_month_year')
 by_year = pd.read_csv('data/modified_visitors_by_month', index_col = [0])
-by_purpose = pd.read_csv('data/by_purpose_cleaned')
+by_purpose = pd.read_csv('data/by_purpose_cleaned_new')
 by_nationality = pd.read_csv('data/by_major_nationality_2013')
 by_sex_age = pd.read_csv('data/by_sex_age')
 
@@ -129,8 +129,8 @@ def update_figure(selected_year, selected_option):
         # create a new dataframe for selected year
         dff = by_purpose[by_purpose.Year == selected_year ]
         return {'data' : [go.Bar(
-                                 x=dff['Purpose of visit'].values,
-                                 y=dff['No of tourists'].values,
+                                 x=dff['Purpose of Visit'].values,
+                                 y=dff['No of Tourists'].values,
                                  name = "Histogram "
                                 )
                          ],
